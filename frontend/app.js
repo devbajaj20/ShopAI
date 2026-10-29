@@ -498,61 +498,129 @@ async loadProducts() {
         this._renderActiveFilters({ search, category, maxPrice, sort });
     }
 
-    _renderProducts(products) {
-        const list = document.getElementById('products-list');
-        const count = document.getElementById('products-count');
 
-        if (!list) return;
+_renderProducts(products) {
+    const list = document.getElementById('products-list');
+    const count = document.getElementById('products-count');
 
-        list.replaceChildren();
+    if (!list) return;
 
-        if (count) {
-            count.textContent = `${products.length} product(s)`;
-        }
+    list.replaceChildren();
 
-        if (!products.length) {
-            list.textContent = 'No products found.';
-            return;
-        }
-
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-
-            const title = document.createElement('h4');
-            title.textContent =
-    product.display_name ||
-    product.name ||
-    product.title ||
-    'Product';
-
-            const description = document.createElement('p');
-            description.textContent = product.description || '';
-
-            const price = document.createElement('p');
-            price.className = 'product-price';
-            price.textContent = `₹${Number(product.price || product.amount || 0).toFixed(2)}`;
-
-            const addButton = document.createElement('button');
-            addButton.type = 'button';
-            addButton.className = 'add-to-cart-btn';
-            addButton.textContent = 'Add to cart';
-            
-const productName =
-    product.display_name ||
-    product.name ||
-    product.title ||
-    'product';
-
-addButton.addEventListener('click', () => {
-    this.sendCommand(`Add ${productName} to cart`);
-});
-
-
-            card.append(title, description, price, addButton);
-            list.appendChild(card);
-        });
+    if (count) {
+        count.textContent = `${products.length} product(s)`;
     }
+
+    if (!products.length) {
+        const empty = document.createElement('div');
+        empty.className = 'no-products';
+        empty.textContent = 'No products found.';
+        list.appendChild(empty);
+        return;
+    }
+
+    products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+
+        const header = document.createElement('div');
+        header.className = 'pc-header';
+
+        const icon = document.createElement('div');
+        const category = String(product.category || '').toLowerCase();
+
+        let iconClass = 'pi-default';
+        let iconSymbol = 'fa-shirt';
+
+        if (category.includes('shoe') || category.includes('footwear')) {
+            iconClass = 'pi-shoes';
+            iconSymbol = 'fa-shoe-prints';
+        } else if (category.includes('jean')) {
+            iconClass = 'pi-jeans';
+            iconSymbol = 'fa-person';
+        } else if (category.includes('dress')) {
+            iconClass = 'pi-dress';
+            iconSymbol = 'fa-person-dress';
+        } else if (category.includes('jacket')) {
+            iconClass = 'pi-jacket';
+            iconSymbol = 'fa-shirt';
+        } else if (category.includes('bag')) {
+            iconClass = 'pi-bag';
+            iconSymbol = 'fa-bag-shopping';
+        } else if (category.includes('shirt') || category.includes('clothing')) {
+            iconClass = 'pi-shirt';
+            iconSymbol = 'fa-shirt';
+        }
+
+        icon.className = `pc-icon ${iconClass}`;
+        icon.innerHTML = `<i class="fas ${iconSymbol}"></i>`;
+
+        const info = document.createElement('div');
+        info.style.flex = '1';
+        info.style.minWidth = '0';
+
+        const title = document.createElement('div');
+        title.className = 'pc-name';
+        title.textContent =
+            product.display_name || product.name || product.title || 'Product';
+
+        info.appendChild(title);
+
+        if (product.brand) {
+            const brand = document.createElement('div');
+            brand.className = 'pc-brand';
+            brand.textContent = product.brand;
+            info.appendChild(brand);
+        }
+
+        header.append(icon, info);
+
+        const meta = document.createElement('div');
+        meta.className = 'pc-meta';
+
+        ['size', 'color', 'material'].forEach(key => {
+            if (product[key]) {
+                const tag = document.createElement('span');
+                tag.className = 'pc-tag';
+                tag.textContent = product[key];
+                meta.appendChild(tag);
+            }
+        });
+
+        const footer = document.createElement('div');
+        footer.className = 'pc-footer';
+
+        const price = document.createElement('div');
+        price.className = 'pc-price';
+        price.textContent =
+            `₹${Number(product.price || product.amount || 0).toFixed(2)}`;
+
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'pc-add';
+        addButton.title = 'Add to cart';
+        addButton.setAttribute('aria-label', 'Add to cart');
+        addButton.innerHTML = '<i class="fas fa-plus"></i>';
+
+        const productName =
+            product.display_name || product.name || product.title || 'product';
+
+        addButton.addEventListener('click', event => {
+            event.stopPropagation();
+            this.sendCommand(`Add ${productName} to cart`);
+        });
+
+        footer.append(price, addButton);
+        card.append(header);
+
+        if (meta.children.length) {
+            card.appendChild(meta);
+        }
+
+        card.appendChild(footer);
+        list.appendChild(card);
+    });
+}
 
     _renderActiveFilters(filters) {
         const container = document.getElementById('active-filters');
