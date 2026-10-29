@@ -1,0 +1,154 @@
+{
+  "training_data": {
+    "add_commands": [
+      "add two medium cotton t-shirts under 600",
+      "put a red dress in my cart",
+      "i want three blue jeans",
+      "get me a black leather jacket",
+      "add one large white shirt",
+      "include two small cotton dresses under 1000",
+      "place three medium blue shirts in cart",
+      "buy two pairs of black shoes",
+      "add a woolen sweater to my cart",
+      "put five cotton t-shirts under 500 each"
+    ],
+    "remove_commands": [
+      "remove the red shirt",
+      "delete blue jeans from cart",
+      "take out the expensive item",
+      "cancel the order for shoes",
+      "eliminate the black dress",
+      "drop the cotton t-shirt",
+      "remove all medium shirts",
+      "delete the leather jacket",
+      "take out items under 500",
+      "cancel everything in cart"
+    ],
+    "search_commands": [
+      "search for cotton shirts",
+      "find red dresses under 1000",
+      "show me blue jeans",
+      "look for winter jackets",
+      "display all shirts under 800",
+      "find black leather shoes",
+      "search for medium size clothes",
+      "show cotton t-shirts under 600",
+      "look for woolen sweaters",
+      "find accessories under 2000"
+    ],
+    "checkout_commands": [
+      "proceed to checkout",
+      "complete my order",
+      "pay now",
+      "buy these items",
+      "checkout please",
+      "complete purchase",
+      "finalize order",
+      "pay for cart items",
+      "process payment",
+      "buy now"
+    ],
+    "view_commands": [
+      "show my cart",
+      "what's in my cart",
+      "view cart contents",
+      "display cart items",
+      "show cart summary",
+      "list my items",
+      "what did i add",
+      "cart details",
+      "show shopping list",
+      "view my selections"
+    ]
+  },
+  "test_scenarios": [
+    {
+      "scenario": "Basic Shopping Flow",
+      "steps": [
+        {
+          "command": "add two medium blue cotton shirts under 600",
+          "expected_intent": "add",
+          "expected_entities": {
+            "quantity": 2,
+            "size": "medium",
+            "color": "blue",
+            "material": "cotton",
+            "product_type": "shirts",
+            "price_max": 600
+          }
+        },
+        {
+          "command": "show me my cart",
+          "expected_intent": "view"
+        },
+        {
+          "command": "add a red dress under 1500",
+          "expected_intent": "add",
+          "expected_entities": {
+            "quantity": 1,
+            "color": "red",
+            "product_type": "dress",
+            "price_max": 1500
+          }
+        },
+        {
+          "command": "remove the blue shirt",
+          "expected_intent": "remove",
+          "expected_entities": {
+            "color": "blue",
+            "product_type": "shirt"
+          }
+        },
+        {
+          "command": "proceed to checkout",
+          "expected_intent": "checkout"
+        }
+      ]
+    },
+    {
+      "scenario": "Search and Add Flow",
+      "steps": [
+        {
+          "command": "search for black leather jackets under 3000",
+          "expected_intent": "search",
+          "expected_entities": {
+            "color": "black",
+            "material": "leather",
+            "product_type": "jackets",
+            "price_max": 3000
+          }
+        },
+        {
+          "command": "add the first one to cart",
+          "expected_intent": "add"
+        },
+        {
+          "command": "find cotton t-shirts in medium size",
+          "expected_intent": "search",
+          "expected_entities": {
+            "material": "cotton",
+            "product_type": "t-shirts",
+            "size": "medium"
+          }
+        }
+      ]
+    }
+  ],
+  "evaluation_metrics": {
+    "intent_classification": {
+      "target_accuracy": 0.85,
+      "target_precision": 0.80,
+      "target_recall": 0.80,
+      "target_f1": 0.80
+    },
+    "entity_extraction": {
+      "target_accuracy": 0.75,
+      "target_precision": 0.70,
+      "target_recall": 0.70
+    },
+    "end_to_end": {
+      "target_success_rate": 0.80,
+      "target_user_satisfaction": 0.85
+    }
+  }
+}
